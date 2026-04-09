@@ -4,10 +4,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# ---------------------------
+# Page Config
+# ---------------------------
 st.set_page_config(page_title="Retail Insights Pro", layout="wide")
 st.title("📊 Retail Insights Pro Dashboard")
 
+# ---------------------------
 # Sidebar Filters
+# ---------------------------
 st.sidebar.header("Filters")
 uploaded_file = st.sidebar.file_uploader("Upload your CSV file", type="csv")
 
@@ -31,7 +36,9 @@ if uploaded_file:
         )
         df = df[(df['date'] >= pd.to_datetime(min_date)) & (df['date'] <= pd.to_datetime(max_date))]
     
+    # ---------------------------
     # Metrics
+    # ---------------------------
     st.subheader("Key Metrics")
     col1, col2, col3 = st.columns(3)
     if 'revenue' in df.columns:
@@ -44,13 +51,17 @@ if uploaded_file:
     st.markdown("---")
     st.subheader("Charts & Analytics")
 
+    # ---------------------------
     # Top-Selling Products
+    # ---------------------------
     if 'product' in df.columns and 'purchase_frequency' in df.columns:
         st.markdown("**Top-Selling Products**")
         top_products = df.groupby('product')['purchase_frequency'].sum().sort_values(ascending=False).head(10)
         st.bar_chart(top_products)
     
+    # ---------------------------
     # Revenue by Category Pie Chart
+    # ---------------------------
     if 'revenue' in df.columns and 'category' in df.columns:
         st.markdown("**Revenue by Category**")
         revenue_cat = df.groupby('category')['revenue'].sum()
@@ -59,7 +70,9 @@ if uploaded_file:
         ax1.axis('equal')
         st.pyplot(fig1)
     
-    # Revenue Heatmap over time
+    # ---------------------------
+    # Revenue Heatmap over Time
+    # ---------------------------
     if 'date' in df.columns and 'revenue' in df.columns:
         st.markdown("**Revenue Heatmap (Month vs Day)**")
         df['month'] = df['date'].dt.month
@@ -70,5 +83,6 @@ if uploaded_file:
         st.pyplot(fig2)
 
     st.success("✅ Pro Dashboard ready! Explore your data using the sidebar filters.")
+
 else:
     st.info("Please upload a CSV file from the sidebar to get started.")
